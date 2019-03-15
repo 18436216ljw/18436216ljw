@@ -1,10 +1,20 @@
 package com.chatclient.view;
-
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridLayout;
 
 import javax.swing.*;
 
-public class ClientLogin extends JFrame{
+import com.yychat.model.User;
+import com.yychatclient.control.ClientConnet;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+import javax.swing.*;
+
+public class ClientLogin extends JFrame implements ActionListener{
 	
 	JLabel jlbl1;
 		
@@ -20,7 +30,7 @@ public class ClientLogin extends JFrame{
 	JButton jb1,jb2,jb3;
 	JPanel jp1;
 	
-	public ClientLogin(){
+	public ClientLogin(String userName){
 
 		jlbl1=new JLabel(new ImageIcon("images/tou.gif"));
 		this.add(jlbl1,"North");
@@ -28,7 +38,7 @@ public class ClientLogin extends JFrame{
 		
 		//创建中部组建
 		jp2=new JPanel(new GridLayout(3,3));//布局的问题
-		jlbl2=new JLabel("嘤嘤号码",JLabel.CENTER);jlbl3=new JLabel("嘤嘤密码",JLabel.CENTER);
+		jlbl2=new JLabel("鸭鸭号码",JLabel.CENTER);jlbl3=new JLabel("鸭鸭密码",JLabel.CENTER);
 		jlbl4=new JLabel("忘记密码",JLabel.CENTER);
 		jlbl4.setForeground(Color.blue);
 		jlbl5=new JLabel("申请密码保护",JLabel.CENTER);
@@ -56,7 +66,6 @@ public class ClientLogin extends JFrame{
 		jp4=new JPanel(new GridLayout(3,3));
 		jlbl21=new JLabel("邮箱号码",JLabel.CENTER);jlbl31=new JLabel("邮箱密码",JLabel.CENTER);
 		jlbl41=new JLabel("忘记密码",JLabel.CENTER);
-		jlbl41=new JLabel("忘记密码",JLabel.CENTER);
 		jlbl41.setForeground(Color.red);
 		jlbl51=new JLabel("申请找回",JLabel.CENTER);
 		jtf11=new JTextField();
@@ -70,7 +79,7 @@ public class ClientLogin extends JFrame{
 		
 		
 		jtp1=new JTabbedPane();
-		jtp1.add(jp2,"嘤嘤号码");jtp1.add(jp3,"Phone");jtp1.add(jp4,"Email");
+		jtp1.add(jp2,"鸭鸭号码");jtp1.add(jp3,"Phone");jtp1.add(jp4,"Email");
 		this.add(jtp1);
 		
 		//创建南部组建
@@ -81,11 +90,35 @@ public class ClientLogin extends JFrame{
 		jp1.add(jb1);jp1.add(jb2);jp1.add(jb3);
 		this.add(jp1,"South" );
 				
+		jb1.addActionListener(this);
 		this.setSize(350,240);
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
+		this.setLocationRelativeTo(null);
 	}
 	public static void main(String[] args){
-			ClientLogin clientLogin=new ClientLogin();
+			ClientLogin clientLogin=new ClientLogin(null);
+	}
+	
+	
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==jb1);{
+			String userName= jtf1.getText();
+			String password=new String(jpf1.getPassword());
+			//创建User对象 
+			User user =new User();
+			user.setUserName(userName);
+			user.setPassWord(password);
+			
+			
+			new ClientConnet().loginValidate(user);
+			new FriendList(userName);
+			this.dispose();
+			
+		}
+		
+		
+		
 	}
 }
