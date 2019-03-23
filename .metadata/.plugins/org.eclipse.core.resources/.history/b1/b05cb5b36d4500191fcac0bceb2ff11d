@@ -1,9 +1,0 @@
-package com.chatclient.view;
-
-public class ClientConnet {
-
-	public ClientConnet() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

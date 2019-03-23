@@ -3,8 +3,14 @@ package com.chatclient.view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 import javax.swing.*;
+
+import com.yychat.model.Message;
+import com.yychat.model.MessageType;
+import com.yychatclient.control.ClientConnet;
 
 public class FriendChatClient extends JFrame implements ActionListener{
 
@@ -18,7 +24,15 @@ public class FriendChatClient extends JFrame implements ActionListener{
 	JPanel jp;
 	JTextField jtf;
 	JButton jb;
+	
+	String sender;
+	String receiver;
+	
 	public FriendChatClient(String sender, String receiver){
+		
+		this.sender=sender;
+		this.receiver=receiver;
+		
 		jta = new JTextArea();
 		jta.setEditable(false);
 		jsp =new JScrollPane(jta);
@@ -50,6 +64,21 @@ public class FriendChatClient extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getSource()==jb) jta.append(jtf.getText()+"\r\n");
 		
-	}
+		
+		//向服务器发送聊天信息
+		Message mess=new Message();
+		mess.setSender(sender);
+		mess.setReceiver(receiver);
+		mess.setContent(jtf.getText());
+		mess.setMessageType(Message.message_Common);
+		ObjectOutputStream oos;
+		try{
+		oos=new ObjectOutputStream(ClientConnet.s.getOutputStream());
+		oos.writeObject(mess);
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		}	
 
 }
+
