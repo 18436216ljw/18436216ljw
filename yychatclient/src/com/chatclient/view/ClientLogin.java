@@ -116,7 +116,8 @@ public class ClientLogin extends JFrame implements ActionListener{
 			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
 			new FriendList(userName);
 			this.dispose();
-			}else{
+			}else
+					{
 			JOptionPane.showMessageDialog(this,"ÃÜÂë´íÎó");
 			
 					}

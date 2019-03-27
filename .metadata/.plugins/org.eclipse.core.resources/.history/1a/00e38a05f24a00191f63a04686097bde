@@ -1,9 +1,0 @@
-package yychatsserver;
-
-public class ServerReceiverThread {
-
-	public ServerReceiverThread() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

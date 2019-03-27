@@ -113,25 +113,17 @@ public class ClientLogin extends JFrame implements ActionListener{
 			user.setPassWord(password);
 			
 			Message mess=new ClientConnet().loginValidate(user);
-			if(mess.getMessageType().equals("1")){
+			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
 			new FriendList(userName);
 			this.dispose();
 			}else{
 			JOptionPane.showMessageDialog(this,"ÃÜÂë´íÎó");
 			
-			}
+					}
 		      }
-			
-			
-			}
-			
-			
-			//new ClientConnet().loginValidate(user);
-			//new FriendList(userName);
-			//this.dispose();
-			
 		}
-		
+
+	}
 		
 		
 	
