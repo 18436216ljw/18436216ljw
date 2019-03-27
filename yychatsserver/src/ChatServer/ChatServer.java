@@ -6,7 +6,7 @@ import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
-import yychatsserver.StartServer;
+import yychatserver.StartServer;
 
 public class ChatServer  extends JFrame implements ActionListener{
 		JButton jb1;

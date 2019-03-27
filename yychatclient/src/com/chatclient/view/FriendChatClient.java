@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import javax.swing.*;
@@ -12,7 +13,7 @@ import com.yychat.model.Message;
 import com.yychat.model.MessageType;
 import com.yychatclient.control.ClientConnet;
 
-public class FriendChatClient extends JFrame implements ActionListener{
+public class FriendChatClient extends JFrame implements ActionListener,Runnable{//严格实现单继承
 
 	
 	//
@@ -61,7 +62,7 @@ public class FriendChatClient extends JFrame implements ActionListener{
 
 	}
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent arg0) {//事件处理代码
 		if(arg0.getSource()==jb) jta.append(jtf.getText()+"\r\n");
 		
 		
@@ -75,10 +76,39 @@ public class FriendChatClient extends JFrame implements ActionListener{
 		try{
 		oos=new ObjectOutputStream(ClientConnet.s.getOutputStream());
 		oos.writeObject(mess);
+		
+		//ObjectInputStream ois=new ObjectInputStream(ClientConnet.s.getInputStream());
+		//mess=(Message)ois.readObject();//接收聊天信息
+		//String showMessage=mess.getSender()+"对"+mess.getReceiver()+"说:"+mess.getContent();
+		//System.out.println(showMessage);
+		//jta.append(showMessage+"r\n");
+		
+		
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-		}	
+		}
+	@Override
+	public void run() {
+		ObjectInputStream ois;
+		while(true){
+		try {	
+			ois=new ObjectInputStream(ClientConnet.s.getInputStream());
+			Message mess=(Message)ois.readObject();//接收聊天信息
+		String showMessage=mess.getSender()+"对"+mess.getReceiver()+"说:"+mess.getContent();
+		System.out.println(showMessage);
+		jta.append(showMessage+"\r\n");             
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		}
+	}	
 
 }
 
