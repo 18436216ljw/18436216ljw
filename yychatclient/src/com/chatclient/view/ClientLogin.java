@@ -10,12 +10,20 @@ import com.yychatclient.control.ClientConnet;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 import javax.swing.*;
 
 public class ClientLogin extends JFrame implements ActionListener{
+	
+	
+	
+			
+			
+
+
 	
 	JLabel jlbl1;
 		
@@ -100,9 +108,8 @@ public class ClientLogin extends JFrame implements ActionListener{
 	public static void main(String[] args){
 			ClientLogin clientLogin=new ClientLogin(null);
 	}
-	
-	
-	@Override
+
+@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==jb1);{
 			String userName= jtf1.getText();
@@ -124,7 +131,25 @@ public class ClientLogin extends JFrame implements ActionListener{
 		      }
 		}
 
-	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
+
+
+
 		
 		
 	

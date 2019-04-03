@@ -1,4 +1,4 @@
-package com.chatclient.view;
+/*package com.chatclient.view;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -99,16 +99,13 @@ public class FriendChatClient extends JFrame implements ActionListener,Runnable{
 		System.out.println(showMessage);
 		jta.append(showMessage+"\r\n");             
 			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (IOException | ClassNotFoundException e) {
+
 			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 
 		}
 	}	
 
-}
+}*/
 

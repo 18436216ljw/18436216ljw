@@ -5,10 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.net.Socket;
+import java.util.HashMap;
 
 import javax.swing.*;
 
 public class FriendList extends JFrame implements ActionListener,MouseListener{//顶层容器
+	
+	public static HashMap hmFriendChatClient1=new HashMap<String,FriendChatClient1>();//键值对
+	
+	
 	CardLayout cardLayout;//卡片布局
 	
 	JPanel myFriendPanel;
@@ -32,7 +38,13 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 	JButton myStrangerJButton1;
 	
 	JButton blackListJButton1;
+	
+	
 	String userName;
+	
+	
+	
+	
 	public FriendList(String userName){
 		this.userName=userName;
 		//第一张卡片
@@ -131,8 +143,9 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		if(arg0.getClickCount()==2){
 			JLabel jlbl=(JLabel)arg0.getSource();
 			String receiver =jlbl.getText();
-			//new FriendChatClient(this.userName,receiver);
-		new Thread(new FriendChatClient(this.userName,receiver)).start();
+			FriendChatClient1 friendChatClient1=new FriendChatClient1(this.userName,receiver);//friendChatClient1是一个变量，用于引用
+			hmFriendChatClient1.put(userName+"to"+receiver,friendChatClient1);//保存对象到hashmap中
+		
 		}
 		
 		
@@ -153,13 +166,13 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 
 	@Override
 	public void mousePressed(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+		
 		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
+
 		
 	}
 }

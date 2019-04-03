@@ -1,0 +1,9 @@
+package com.yychatclient.control;
+
+public class ClientReceiverThread {
+
+	public ClientReceiverThread() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

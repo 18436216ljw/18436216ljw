@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 
 import com.yychat.model.Message;
 import com.yychat.model.User;
 
 public class ClientConnet {
-	
+	public static HashMap hmSocket=new HashMap<String,Socket>();
 	 
 public static	Socket s;//静态成员变量，类变量
 	
+
+
 	public ClientConnet() {
 		try {
 			s=new Socket("127.0.0.1",3456);
@@ -30,10 +33,17 @@ public static	Socket s;//静态成员变量，类变量
 			oos =new ObjectOutputStream(s.getOutputStream());
 			oos.writeObject(user);
 			
+			
 			//接收验证通过的mess
 			 ois=new ObjectInputStream(s.getInputStream());
 			mess=(Message)ois.readObject();
 			
+			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
+				System.out.println(user.getUserName()+"登陆成功");
+					hmSocket.put(user.getUserName(),s);
+				new ClientReceiverThread(s).start();
+				}
+				
 			
 		} catch (IOException|ClassNotFoundException e) {
 			e.printStackTrace();
