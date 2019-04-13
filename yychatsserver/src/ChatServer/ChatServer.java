@@ -15,6 +15,9 @@ public class ChatServer  extends JFrame implements ActionListener{
 	public ChatServer() {
 		jb1=new JButton("启动服务器");
 		jb1.addActionListener(this);
+		////////////////////////////////////////////////////////////////////////////////////
+		getRootPane().setDefaultButton(jb1);
+////////////////////////////////////////////////////////////////////////////////////////////
 		jb2=new JButton("停止服务器");
 		jp =new JPanel();
 		jp.add(jb1);

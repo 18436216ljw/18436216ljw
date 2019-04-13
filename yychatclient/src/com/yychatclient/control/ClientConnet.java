@@ -22,10 +22,13 @@ public static	Socket s;//静态成员变量，类变量
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
 	}
 
-	public Message loginValidate(User user){
+	public  boolean loginValidate(User user){
+		boolean loginSuccess=false;
+		
 		ObjectOutputStream oos;
 		ObjectInputStream ois;
 		Message mess= null;
@@ -39,6 +42,7 @@ public static	Socket s;//静态成员变量，类变量
 			mess=(Message)ois.readObject();
 			
 			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
+				loginSuccess=true;
 				System.out.println(user.getUserName()+"登陆成功");
 					hmSocket.put(user.getUserName(),s);
 				new ClientReceiverThread(s).start();
@@ -48,7 +52,7 @@ public static	Socket s;//静态成员变量，类变量
 		} catch (IOException|ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return mess;
+		return loginSuccess;
 		
 	}
 }

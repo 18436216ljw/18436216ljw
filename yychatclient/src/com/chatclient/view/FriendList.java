@@ -59,9 +59,14 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		for(int i=1;i<FRIENDCOUNT;i++)
 		{
 			myFriendJLabel[i]=new JLabel(i+"",new ImageIcon("images/YY0.gif"),JLabel.LEFT);//"1"
+			myFriendJLabel[i].setEnabled(false);//未激活所有图标
+			//
+			
 			myFriendJLabel[i].addMouseListener(this);
 			myFriendListJPanel.add(myFriendJLabel[i]);
 		}
+		myFriendJLabel[Integer.parseInt(userName)].setEnabled(true);
+		
 		//myFriendScrollPane=new JScrollPane();
 		//myFriendScrollPane.add(myFriendListJPanel);
 		myFriendScrollPane=new JScrollPane(myFriendListJPanel);
@@ -143,12 +148,18 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		if(arg0.getClickCount()==2){
 			JLabel jlbl=(JLabel)arg0.getSource();
 			String receiver =jlbl.getText();
-			FriendChatClient1 friendChatClient1=new FriendChatClient1(this.userName,receiver);//friendChatClient1是一个变量，用于引用
-			hmFriendChatClient1.put(userName+"to"+receiver,friendChatClient1);//保存对象到hashmap中
-		
-		}
-		
-		
+			
+			
+		FriendChatClient1 friendChatClient1=(FriendChatClient1)hmFriendChatClient1.get(userName+"to"+receiver);
+			if(friendChatClient1==null){
+				friendChatClient1=new FriendChatClient1(this.userName,receiver);//friendChatClient1是一个变量，用于引用
+				hmFriendChatClient1.put(userName+"to"+receiver,friendChatClient1);//保存对象到hashmap中	
+			}else{
+			
+				friendChatClient1.setVisible(true);
+				
+			}			
+		}		
 	}
 
 	@Override

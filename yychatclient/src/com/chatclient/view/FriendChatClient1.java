@@ -45,13 +45,17 @@ public class FriendChatClient1 extends JFrame implements ActionListener{//严格实
 		this.add(jsp,"Center");
 		
 		
+		
 		jp =new JPanel();
 		jtf =new JTextField(15);
 		jtf.setForeground(Color.red);
 		jb=new JButton("发送");
 		jb.addActionListener(this);
 		jp.add(jtf);
-		jp.add(jb);
+		////////////////////////////////////////////////////////////////////////////////////////
+		jp.add(jb);getRootPane().setDefaultButton(jb);
+		////////////////////////////////////////////////////////////////////////////////////////
+		
 		this.add(jp,"South");
 		
 		
@@ -59,7 +63,7 @@ public class FriendChatClient1 extends JFrame implements ActionListener{//严格实
 		this.setTitle(sender+"正在和"+receiver+"聊天");
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
-	
+		
 	}
 	public static void main(String[] args) {
 		//FriendChatClient FriendChatClient=new FriendChatClient();
@@ -105,9 +109,5 @@ public class FriendChatClient1 extends JFrame implements ActionListener{//严格实
    
    			}
 		
-
-
-
-
 
 }
