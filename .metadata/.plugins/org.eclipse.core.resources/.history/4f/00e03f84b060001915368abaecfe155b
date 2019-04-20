@@ -13,13 +13,12 @@ public class ServerReceiverThread extends Thread{
 	Socket s;
 	public ServerReceiverThread(Socket s) {//
 	this.s=s;
-	}	
-	ObjectInputStream ois;
-	ObjectOutputStream oos;
-	Message mess;
+	}
 		
 	public void run(){
-	
+		ObjectInputStream ois;
+			ObjectOutputStream oos;
+			Message mess;
 		while(true){
 		
 		try{
@@ -31,7 +30,6 @@ public class ServerReceiverThread extends Thread{
 	
 		if(mess.getMessageType().equals(Message.message_Common)){
 		Socket s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
-		
 		senderMessage(mess, s1);
 		
 		}
@@ -51,7 +49,7 @@ public class ServerReceiverThread extends Thread{
 		//发送好友名字到客户端
 			mess.setContent(friendString);
 			mess.setMessageType(Message.message_OnlineFriend);
-			mess.setSender("Server");
+			mess.setSender("Sercer");
 			mess.setReceiver(Sender);
 			senderMessage(mess, s);
 			
@@ -67,6 +65,7 @@ public class ServerReceiverThread extends Thread{
 	}
 
 	public void senderMessage(Message mess, Socket s) throws IOException {
+		ObjectOutputStream oos;
 		oos=new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(mess);//转发聊天信息
 	}

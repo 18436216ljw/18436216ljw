@@ -44,7 +44,7 @@ public void run(){
 					if(mess.getMessageType().equals(Message.message_OnlineFriend)){
 						
 						//激活对应图标，首先要拿到好友列表对象
-						FriendList friendList=(FriendList)ClientLogin.hmFriendList.get(mess.getReceiver());
+						FriendList friendList=(FriendList) ClientLogin.hmFriendList.get(mess.getReceiver());
 						//激活对应图标
 						friendList.setEnableFriendIcon(mess.getContent());
 						

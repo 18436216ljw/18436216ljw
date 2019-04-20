@@ -132,7 +132,7 @@ public class ClientLogin extends JFrame implements ActionListener{
 			
 			boolean loginSuccess=new ClientConnet().loginValidate(user);
 			if(loginSuccess){
-			
+			new FriendList(userName);
 			FriendList friendList =new FriendList(userName);
 			hmFriendList.put(userName, friendList);
 			

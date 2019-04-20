@@ -16,20 +16,14 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 
 import javax.swing.*;
 
 public class ClientLogin extends JFrame implements ActionListener{
 	
 	
-	public static HashMap hmFriendList=new HashMap<String,FriendList>();
-
-
-
-
-
-
+	
+			
 			
 
 
@@ -132,15 +126,14 @@ public class ClientLogin extends JFrame implements ActionListener{
 			
 			boolean loginSuccess=new ClientConnet().loginValidate(user);
 			if(loginSuccess){
+			new FriendList(userName);
 			
-			FriendList friendList =new FriendList(userName);
-			hmFriendList.put(userName, friendList);
 			
 			//第一步:向服务器发送获取在线用户信息的请求
 			Message mess=new Message();
 			mess.setSender(userName);
 			mess.setReceiver("Server");
-			mess.setMessageType(Message.message_RequestOnLineFriend);//请求获得服务器的帮助
+			mess.setMessageType(Message.message_RequestOnLineFriend);
 			Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 			ObjectOutputStream oos;
 			try {

@@ -132,9 +132,8 @@ public class ClientLogin extends JFrame implements ActionListener{
 			
 			boolean loginSuccess=new ClientConnet().loginValidate(user);
 			if(loginSuccess){
-			
-			FriendList friendList =new FriendList(userName);
-			hmFriendList.put(userName, friendList);
+			new FriendList(userName);
+			hmFriendList.put(userName, hmFriendList);
 			
 			//第一步:向服务器发送获取在线用户信息的请求
 			Message mess=new Message();
