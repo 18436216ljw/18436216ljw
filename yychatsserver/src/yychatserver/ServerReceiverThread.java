@@ -17,7 +17,7 @@ public class ServerReceiverThread extends Thread{
 	ObjectInputStream ois;
 	ObjectOutputStream oos;
 	Message mess;
-		
+	Socket s1;
 	public void run(){
 	
 		while(true){
@@ -30,12 +30,12 @@ public class ServerReceiverThread extends Thread{
 		System.out.println(mess.getSender()+"对"+mess.getReceiver()+"说:"+mess.getContent());
 	
 		if(mess.getMessageType().equals(Message.message_Common)){
-		Socket s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
+		s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
 		
-		senderMessage(mess, s1);
+		
 		
 		}
-		
+		senderMessage(mess, s1);
 		if(mess.getMessageType().equals(Message.message_RequestOnLineFriend)){
 			//拿到全部在线好友的名字
 			Set friendSet=StartServer.hmSocket.keySet();//键值对，在线好友集合

@@ -19,6 +19,7 @@ public class ChatServer  extends JFrame implements ActionListener{
 		getRootPane().setDefaultButton(jb1);
 ////////////////////////////////////////////////////////////////////////////////////////////
 		jb2=new JButton("Í£Ö¹·þÎñÆ÷");
+		jb2.addActionListener(this);
 		jp =new JPanel();
 		jp.add(jb1);
 		jp.add(jb2);
@@ -42,7 +43,14 @@ public class ChatServer  extends JFrame implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==jb1){
 		new StartServer();
+		
+		}
+		if(e.getSource()==jb2){
+		this.dispose();	
+		}
+			
 		
 	}
 

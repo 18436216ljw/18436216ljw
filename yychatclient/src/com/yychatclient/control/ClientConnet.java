@@ -41,7 +41,7 @@ public static	Socket s;//静态成员变量，类变量
 			 ois=new ObjectInputStream(s.getInputStream());
 			mess=(Message)ois.readObject();
 			
-			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
 				loginSuccess=true;
 				System.out.println(user.getUserName()+"登陆成功");
 					hmSocket.put(user.getUserName(),s);

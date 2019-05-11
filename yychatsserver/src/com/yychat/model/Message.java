@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable,MessageType{//¿‡ «µ•ºÃ≥–
 
+	
 	private String sender;
 	private String receiver;
 	private String content;

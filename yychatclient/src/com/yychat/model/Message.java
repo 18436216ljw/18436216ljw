@@ -3,6 +3,7 @@ import java.io.Serializable;
 
 public class Message implements Serializable,MessageType {
 
+	
 	private String sender;
 	private String receiver;
 	private String messageType;

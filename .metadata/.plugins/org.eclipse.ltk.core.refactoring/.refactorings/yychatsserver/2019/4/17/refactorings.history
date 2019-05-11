@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Extract method &apos;public void senderMessage(Message mess, Socket s) throws IOException &apos; from &apos;yychatserver.StartServer.StartServer()&apos; to &apos;yychatserver.StartServer&apos;&#x0D;&#x0A;- Original project: &apos;yychatsserver&apos;&#x0D;&#x0A;- Method name: &apos;senderMessage&apos;&#x0D;&#x0A;- Destination type: &apos;yychatserver.StartServer&apos;&#x0D;&#x0A;- Declared visibility: &apos;public&apos;" comments="false" description="Extract method &apos;senderMessage&apos;" destination="0" exceptions="false" flags="786434" id="org.eclipse.jdt.ui.extract.method" input="/src&lt;yychatserver{StartServer.java" name="senderMessage" replace="false" selection="1386 93" stamp="1556066837918" version="1.0" visibility="1"/>
+</session>

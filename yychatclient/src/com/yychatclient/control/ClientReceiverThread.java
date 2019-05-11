@@ -50,6 +50,16 @@ public void run(){
 						
 					}
 					
+					//接收信息，激活图标
+					if(mess.getMessageType().equals(Message.message_NewOnlineFriend)){
+						System.out.println("新用户上线了，用户名："+mess.getContent());
+						//激活对应图标，首先要拿到好友列表对象
+						FriendList friendList=(FriendList)ClientLogin.hmFriendList.get(mess.getReceiver());
+						//激活对应图标
+						friendList.setEnableFriendIcon(mess.getContent());
+						
+					}
+					
 			} 
 					catch (IOException | ClassNotFoundException e) {
 
