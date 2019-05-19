@@ -32,10 +32,12 @@ public class ServerReceiverThread extends Thread{
 		if(mess.getMessageType().equals(Message.message_Common)){
 		s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
 		
-		
+			senderMessage(mess, s1);
 		
 		}
-		senderMessage(mess, s1);
+		
+	
+		
 		if(mess.getMessageType().equals(Message.message_RequestOnLineFriend)){
 			//拿到全部在线好友的名字
 			Set friendSet=StartServer.hmSocket.keySet();//键值对，在线好友集合

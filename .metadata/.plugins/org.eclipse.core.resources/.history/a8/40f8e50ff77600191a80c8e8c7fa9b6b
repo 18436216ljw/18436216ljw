@@ -1,0 +1,9 @@
+package com.yychatclient.control;
+
+public class yychatDbUtil {
+
+	public yychatDbUtil() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

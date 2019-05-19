@@ -130,22 +130,24 @@ public class ClientLogin extends JFrame implements ActionListener{
 			user.setUserName(userName);
 			user.setPassWord(password);
 			
-			boolean loginSuccess=new ClientConnet().loginValidate(user);
-			if(loginSuccess){
-			
-			FriendList friendList =new FriendList(userName);
+			Message mess=new ClientConnet().loginValidateFromDB(user);
+			//if(loginSuccess){
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
+				String friendString=mess.getContent();
+				
+			FriendList friendList =new FriendList(userName,friendString);
 			hmFriendList.put(userName, friendList);
 			
 			//第一步:向服务器发送获取在线用户信息的请求
-			Message mess=new Message();
-			mess.setSender(userName);
-			mess.setReceiver("Server");
-			mess.setMessageType(Message.message_RequestOnLineFriend);//请求获得服务器的帮助
+			Message mess1=new Message();
+			mess1.setSender(userName);
+			mess1.setReceiver("Server");
+			mess1.setMessageType(Message.message_RequestOnLineFriend);//请求获得服务器的帮助
 			Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 			ObjectOutputStream oos;
 			try {
 			oos =new ObjectOutputStream(s.getOutputStream());
-			oos.writeObject(mess);
+			oos.writeObject(mess1);
 			} catch (IOException e1) {
 	
 				e1.printStackTrace();

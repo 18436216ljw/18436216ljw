@@ -6,9 +6,9 @@ public class Message implements Serializable,MessageType {
 	
 	private String sender;
 	private String receiver;
-	private String messageType;
-	private String content;
-	public String getContent() {
+	private  String messageType;
+	private  String content;
+	public  String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
@@ -26,7 +26,7 @@ public class Message implements Serializable,MessageType {
 	public void setReceiver(String receiver) {
 		this.receiver = receiver;
 	}
-	public String getMessageType() {
+	public  String getMessageType() {
 		return messageType;
 	}
 	public void setMessageType(String messageType) {

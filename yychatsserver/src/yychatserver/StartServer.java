@@ -53,7 +53,7 @@ public class StartServer {
 		System.out.println(user.getUserName());
 		System.out.println(user.getPassWord());
 		
-		//1.加载驱动程序
+		/*//1.加载驱动程序
 		Class.forName("com.mysql.jdbc.Driver");
 		
 		
@@ -75,8 +75,8 @@ public class StartServer {
 		
 		
 		//5.根据结果集来判断是否能登陆
-		boolean	loginSuccess=rs.next();
-		
+		boolean	loginSuccess=rs.next();*/
+		boolean loginSuccess=yychatDbUtil.loginValidate(userName, passWord);
 		
 		//密码验证功能
 		mess=new Message();
@@ -90,7 +90,7 @@ public class StartServer {
 		mess.setMessageType(Message.message_LoginSuccess);//1为验证通过
 		
 		//利用数据表中好友信息来更新好友列表 1。服务器查询好友信息表，并发送到
-		String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
+		/*String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
 		ptmt=conn.prepareStatement(friend_Relation_Sql);
 		ptmt.setString(1,userName);
 		rs=ptmt.executeQuery();
@@ -98,7 +98,9 @@ public class StartServer {
 		while(rs.next()){//移动结果集中的指针，把好友名字一个个取出来
 			
 			friendString=friendString+rs.getString("slaveuser")+" ";
-		}
+		}*/
+		String friendString=yychatDbUtil.getFriendString(userName);
+		
 		mess.setContent(friendString);
 		System.out.println(userName+"的relation数据库中的好友:"+friendString);
 		
@@ -139,9 +141,6 @@ public class StartServer {
 	
 		
 		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
