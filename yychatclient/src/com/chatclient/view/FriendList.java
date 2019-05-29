@@ -156,6 +156,7 @@ public class FriendList extends JFrame implements ActionListener,MouseListener{/
 		myFriendJLabel[Integer.parseInt(newOnlinefriendString)].setEnabled(true);
 		
 	}
+	
 		
 		
 	@Override

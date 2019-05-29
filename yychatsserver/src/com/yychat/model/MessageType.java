@@ -9,4 +9,6 @@ public interface MessageType {
 	String message_RequestOnLineFriend="3";
 	String message_OnlineFriend="4";
 	String message_NewOnlineFriend="5";
+	String message_RegisterSuccess="6";
+	String message_RegisterFailure="7";
 }

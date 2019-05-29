@@ -102,7 +102,11 @@ public class ClientLogin extends JFrame implements ActionListener{
 		
 		//创建南部组建
 		jb1=new JButton(new ImageIcon("images/denglu.gif"));
+		jb1.addActionListener(this);
+		
 		jb2=new JButton(new ImageIcon("images/zhuce.gif"));
+		jb2.addActionListener(this);
+		
 		jb3=new JButton(new ImageIcon("images/quxiao.gif"));
 		jp1=new JPanel();
 		jp1.add(jb1);jp1.add(jb2);jp1.add(jb3);
@@ -121,50 +125,61 @@ public class ClientLogin extends JFrame implements ActionListener{
 	}
 
 @Override
-	public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==jb1);{
+
+public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==jb2){
 			String userName= jtf1.getText();
 			String password=new String(jpf1.getPassword());
 			//创建User对象 
 			User user =new User();
 			user.setUserName(userName);
 			user.setPassWord(password);
+			user.setUserMessageType("USER_REGISTER");
+			boolean registerSuccess=new ClientConnet().registerUserIntoDB(user);
+			if(registerSuccess){
+				JOptionPane.showMessageDialog(this,"注册成功！");
+			}else {
+					JOptionPane.showMessageDialog(this,"可能存在同名用户，注册失败！");
+				}
+		}
+		
+		if(e.getSource()==jb1){
+			String userName= jtf1.getText();
+			String password=new String(jpf1.getPassword());
+			//创建User对象 
+			User user =new User();
+			user.setUserName(userName);
+			user.setPassWord(password);
+			user.setUserMessageType("USER_LOGIN");
 			
+			//boolean loginSuccess=new ClientConnect().loginValidate(user);
 			Message mess=new ClientConnet().loginValidateFromDB(user);
-			//if(loginSuccess){
-			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
-				String friendString=mess.getContent();
-				
-			FriendList friendList =new FriendList(userName,friendString);
-			hmFriendList.put(userName, friendList);
+			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
+			String friendString=mess.getContent();
+			System.out.println("全部好友"+friendString);
 			
-			//第一步:向服务器发送获取在线用户信息的请求
+			FriendList friendList =new FriendList(userName,friendString);
+			hmFriendList.put(userName,friendString );
+			//第一步
 			Message mess1=new Message();
 			mess1.setSender(userName);
 			mess1.setReceiver("Server");
-			mess1.setMessageType(Message.message_RequestOnLineFriend);//请求获得服务器的帮助
+			mess1.setMessageType(Message.message_RequestOnLineFriend);
 			Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 			ObjectOutputStream oos;
-			try {
-			oos =new ObjectOutputStream(s.getOutputStream());
-			oos.writeObject(mess1);
+			try{
+				oos=new ObjectOutputStream(s.getOutputStream());
+				oos.writeObject(mess);
 			} catch (IOException e1) {
-	
 				e1.printStackTrace();
 			}
 			
 			this.dispose();
-			}else
-					{
+			}else{
 			JOptionPane.showMessageDialog(this,"密码错误");
 			
 					}
 		      }
 		}
-   }
 
-
-		
-		
-	
-
+	}
