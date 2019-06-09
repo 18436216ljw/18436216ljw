@@ -7,71 +7,90 @@ import java.net.Socket;
 import java.util.Iterator;
 import java.util.Set;
 
+import javax.management.relation.RelationType;
+
 import com.yychat.model.Message;
 
 public class ServerReceiverThread extends Thread{
 	Socket s;
-	public ServerReceiverThread(Socket s) {//
-	this.s=s;
-	}	
+	String sender;
 	ObjectInputStream ois;
-	ObjectOutputStream oos;
 	Message mess;
-	Socket s1;
+	ObjectOutputStream oos;
+	public ServerReceiverThread(Socket s) {
+		this.s=s;
+		
+	}
+	
 	public void run(){
-	
+		
 		while(true){
-		
-		try{
-			String Sender;
-		ois=new ObjectInputStream(s.getInputStream());
-		mess=(Message)ois.readObject();//接收聊天信息
-		Sender=mess.getSender();
-		System.out.println(mess.getSender()+"对"+mess.getReceiver()+"说:"+mess.getContent());
-	
-		if(mess.getMessageType().equals(Message.message_Common)){
-		s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
-		
-			senderMessage(mess, s1);
-		
-		}
-		
-	
-		
-		if(mess.getMessageType().equals(Message.message_RequestOnLineFriend)){
-			//拿到全部在线好友的名字
-			Set friendSet=StartServer.hmSocket.keySet();//键值对，在线好友集合
-			Iterator it=friendSet.iterator();//迭代器对象
-			String friendName;
-			String friendString=" ";
-		while(it.hasNext()){//判断还有没有下一个元素
-			friendName=(String)it.next();//取出下一个元素
-			if(!friendName.equals(mess.getSender()))
-				friendString=friendName+" "+friendString;//为什么用空格？
+		try {
+			ois= new ObjectInputStream(s.getInputStream());
+			mess=(Message)ois.readObject();//
+				sender =mess.getSender();
+			System.out.println(mess.getSender()+"对"+mess.getReceiver()+"说："+mess.getContent());
+				
+			if(mess.getMessageType().equals(Message.message_AddFriend)){
+				String addFriendName=mess.getContent();
+				System.out.println("需要添加新好友的名字："+ addFriendName);
+				if(!yychatDbUtil.seekUser(addFriendName)){
+					mess.setMessageType(Message.message_AddFriendFailure_NoUser);
+				}else{
+					//用户存在
+					//判断该用户是否已经是好友
+					String relationType="1";
+					if(yychatDbUtil.seekRelation(sender,addFriendName,relationType)){//查询好友
+						//已经是好友，不能添加
+						mess.setMessageType(Message.message_AddFriendFailure_AlreadyFriend);
+					}else {//还不是好友，可以添加
+						int count= yychatDbUtil.addRelation(sender,addFriendName,relationType);
+						if(count!=0){
+							mess.setMessageType(Message.message_AddFriendSuccess);
+							//拿到全部好友
+							String allFriendName=yychatDbUtil.getFriendString(sender);
+							mess.setContent(allFriendName);
+							
+						}
+					}
 				}
+				sendMessage(s,mess);
+			}
 			
-		//发送好友名字到客户端
-			mess.setContent(friendString);
-			mess.setMessageType(Message.message_OnlineFriend);
-			mess.setSender("Server");
-			mess.setReceiver(Sender);
-			senderMessage(mess, s);
+			if(mess.getMessageType().equals(Message.message_Common)){
+				Socket s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
+				sendMessage(s1,mess);//
+		}
+			//2
+			if(mess.getMessageType().equals(Message.message_RequestOnLineFriend)){
+				Set friendSet =StartServer.hmSocket.keySet();
+				Iterator it=friendSet.iterator();
+				String friendName;
+				String friendString =" ";
+				while(it.hasNext()){
+					friendName=(String)it.next();
+					if(!friendName.equals(mess.getSender()))
+					friendString=friendName+" "+friendString;
+					
+				}
+				System.out.println("全Socket s,Message mess部好友的名字："+friendString);
+				mess.setContent(friendString);
+				mess.setMessageType(Message.message_OnlineFriend);
+				mess.setSender("Server");
+				mess.setReceiver(sender);
+				sendMessage(s,mess);
+			}
 			
 		}
-		
-		
+			catch (IOException | ClassNotFoundException e) {
+			e.printStackTrace();
+			}
 		}
-		catch(IOException | ClassNotFoundException e){
-		e.printStackTrace();
-	}
-	
-	}
+		
 	}
 
-	public void senderMessage(Message mess, Socket s) throws IOException {
-		oos=new ObjectOutputStream(s.getOutputStream());
-		oos.writeObject(mess);//转发聊天信息
+	private void sendMessage(Socket s,Message mess) throws IOException {
+		oos =new ObjectOutputStream(s.getOutputStream());
+		oos.writeObject(mess);
 	}
 }
-		
-	

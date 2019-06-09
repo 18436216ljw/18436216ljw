@@ -18,121 +18,184 @@ public class yychatDbUtil {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	
+}
+		//2、获取连接的对象
 	public static Connection getConnection(){
-		loadDriver();
-		Connection conn=null;
-		try {
-		conn=DriverManager.getConnection(URL,DBUSER,DBPASS);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return conn;
-		}
-	
-
-	
-	public static boolean seeKUser(String userName) {
-		boolean seeKUserResult=false;
-		Connection conn=getConnection();
-		String user_Register_Sql="select * from user where username=?";
-		PreparedStatement ptmt=null;
-		ResultSet rs=null;
-		try {
-			ptmt = conn.prepareStatement(user_Register_Sql);
-			ptmt.setString(1, userName);
-			//4、执行查询，返回结果集
-			rs=ptmt.executeQuery();
-			seeKUserResult=rs.next();
-		}catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			closeDB(conn, ptmt, rs);
-		}
-		return seeKUserResult;
+	loadDriver();
+	Connection conn=null;
+	try {
+		conn = DriverManager.getConnection(URL,DBUSER,DBPASS);
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
-	
-	
-	public static void addUser(String userName, String passWord){
-Connection conn=getConnection();
-		
-		String user_add_Sql="insert into user(username,password,registertimestamp) values(?,?,?)";
+	return conn;
+}
+	public static int addRelation(String majorUser,String slaveUser,String relationType){
+		int count =0;
+		Connection conn =getConnection();
+		String relation_Add_Sql="insert into relation (majoruser,slaveuser,relationtype) values(?,?,?)";
 		PreparedStatement ptmt=null;
-		ResultSet rs=null;
+		
 		try {
-			ptmt = conn.prepareStatement(user_add_Sql);
-			ptmt.setString(1, userName);
-			ptmt.setString(2, passWord);
+			ptmt=conn.prepareStatement(relation_Add_Sql);	
+			ptmt.setString(1,majorUser);
+			ptmt.setString(2,slaveUser);
+			ptmt.setString(3,relationType);
 			//java.util.Date date=new java.util.Date();
-			Date date =new Date();
-			java.sql.Timestamp timestamp=new java.sql.Timestamp(date.getTime());
-			ptmt.setTimestamp(3,timestamp);
 			//4、执行查询，返回结果集
-			int count=ptmt.executeUpdate();
-				
-			
+			count=ptmt.executeUpdate();//插入记录的条数
 		} catch (SQLException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			closeDB(conn, ptmt, rs);
+		} finally{
+			closeDB(conn,ptmt);
 		}
+		return count;
+	}	
+	
+public static void addUser(String userName,String passWord){
+	Connection conn =getConnection();
+	String user_Login_Sql="insert into user (username,password,registertimestamp) values(?,?,?)";
+	PreparedStatement ptmt=null;
+	
+	try {
+		ptmt=conn.prepareStatement(user_Login_Sql);	
+		ptmt.setString(1,userName);
+		ptmt.setString(2,passWord);
+		//java.util.Date date=new java.util.Date();
+		Date date=new Date();
+		java.sql.Timestamp timestamp=new java.sql.Timestamp(date.getTime());
+		ptmt.setTimestamp(3, timestamp);
+		//4、执行查询，返回结果集
+		int count=ptmt.executeUpdate();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} finally{
+		closeDB(conn,ptmt);
+	}
+}
+	
+public static boolean seekUser(String userName) {
+	boolean seekUserResult=false;
+	Connection conn =getConnection();
+	String user_Login_Sql="select * from user where username=?";
+	PreparedStatement ptmt=null;
+	ResultSet rs=null;
+	
+	try {
+		ptmt=conn.prepareStatement(user_Login_Sql);	
+		ptmt.setString(1,userName);
 		
+		//4、执行查询，返回结果集
+		rs =ptmt.executeQuery();
+		//5、根据结果集来判断是否能登录
+		seekUserResult =rs.next();
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} finally{
+		closeDB(conn,ptmt,rs);
 	}
 	
-	public static boolean loginValidate(String userName,String passWord) {
+	return seekUserResult;
+}
+	
+	public static boolean loginValidate(String userName,String passWord){
 		boolean loginSuccess=false;
-		Connection conn=getConnection();
-		
+		Connection conn =getConnection();
+		//3、创建PreparedStatement对象，用来执行SQL语句，标准
 		String user_Login_Sql="select * from user where username=? and password=?";
 		PreparedStatement ptmt=null;
 		ResultSet rs=null;
+		
 		try {
-			ptmt = conn.prepareStatement(user_Login_Sql);
-			ptmt.setString(1, userName);
-			ptmt.setString(2, passWord);
-			//4、执行查询，返回结果集
-			rs=ptmt.executeQuery();
-			
-			//5、根据结果集来判断是否能登录
-			loginSuccess=rs.next();	
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}finally{
-			closeDB(conn, ptmt, rs);
-		}
-
-		return loginSuccess;
-	}
+			ptmt=conn.prepareStatement(user_Login_Sql);	
+			ptmt.setString(1,userName);
+			ptmt.setString(2,passWord);
 	
-	public static String getFriendString (String userName) {
-		Connection conn=getConnection();
-		String friend_Relation_Sql="select * from relation where userName=? and passWord=?";
+			//4、执行查询，返回结果集
+			rs =ptmt.executeQuery();
+			//5、根据结果集来判断是否能登录
+			loginSuccess =rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			closeDB(conn,ptmt,rs);
+		}
+		System.out.println("loginSuccess为："+loginSuccess);
+		return loginSuccess;
+		}
+	public static boolean seekRelation(String majorUser,String slaveUser,String relationType) {
+		Connection conn =getConnection();
 		PreparedStatement ptmt=null;
 		ResultSet rs=null;
-		String friendString="";
+		boolean seekRelationResult=false;
+		String seek_Relation_Sql="select * from relation where majoruser=? and slaveUser=? and relationtype=?";
 		try {
-			ptmt=conn.prepareStatement(friend_Relation_Sql);
-			ptmt.setString(1, userName);
+			ptmt=conn.prepareStatement(seek_Relation_Sql);
+			ptmt.setString(1,majorUser);
+			ptmt.setString(2,slaveUser);
+			ptmt.setString(3,relationType);
 			rs=ptmt.executeQuery();
-			while(rs.next()){
-				friendString=friendString+rs.getString("slaveuser")+" ";
-			}
+			seekRelationResult =rs.next();
 		} catch (SQLException e) {
-
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}finally{
-			closeDB(conn, ptmt, rs);
 		}
 		
-		System.out.println(userName+" 的relation数据表中的好友："+friendString);
-		return friendString;
+		finally{
+				closeDB(conn,ptmt,rs);
+			}
+		return seekRelationResult;
+		
 	}
-	public static void closeDB(Connection conn,PreparedStatement ptmt) {
+	
+public static String getFriendString(String userName) {
+	Connection conn =getConnection();
+	PreparedStatement ptmt=null;
+	ResultSet rs=null;
+	String friendString="";
+	String friend_Relation_Sql="select slaveuser from relation where majoruser=? and relationtype='1'";
+	try {
+		ptmt=conn.prepareStatement(friend_Relation_Sql);
+		ptmt.setString(1,userName);
+	rs=ptmt.executeQuery();
+	while(rs.next()){
+		friendString=friendString+rs.getString("slaveuser")+" ";
+					}
+	} catch (SQLException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	finally{
+			closeDB(conn,ptmt,rs);
+		}
+	return friendString;
+	
+}
+public static void closeDB(Connection conn,PreparedStatement ptmt){
+	if(conn!=null){
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	if(ptmt!=null){
+		try {
+			conn.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+}
+	public static void closeDB(Connection conn,PreparedStatement ptmt,ResultSet rs){
 		if(conn!=null){
 			try {
 				conn.close();
@@ -142,40 +205,18 @@ Connection conn=getConnection();
 		}
 		if(ptmt!=null){
 			try {
-				ptmt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		
-	}
-	
-	
-	public static void closeDB(Connection conn,PreparedStatement ptmt,ResultSet rs) {
-		if(conn!=null){
-			try {
 				conn.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		if(ptmt!=null){
-			try {
-				ptmt.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
 		if(rs!=null){
 			try {
-				rs.close();
+				conn.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
 		}
-		
 	}
+}
 
-	}
-	

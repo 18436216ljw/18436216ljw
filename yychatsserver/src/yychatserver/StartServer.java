@@ -17,153 +17,107 @@ import java.util.Set;
 import com.yychat.model.Message;
 import com.yychat.model.User;
 
-public class StartServer {
+public class StartServer  {
 	public static HashMap hmSocket=new HashMap<String,Socket>();
-	
+	Socket s;
 	ServerSocket ss;
 	String userName;
 	String passWord;
 	Message mess;
 	public StartServer() {
 		
-		try {
+		
+		try {//
 			ss=new ServerSocket(3456);
 			System.out.println("服务器已经启动，监听3456端口");
-			while(true){
-			
-			Socket s=ss.accept();
-			System.out.println("连接成功:"+s);
 		
+		while(true){
+
+			s=ss.accept();//
+			System.out.println("连接成功:"+s);
+		//
 		ObjectInputStream ois=new ObjectInputStream(s.getInputStream());
 		User user=(User)ois.readObject();
-		userName=user.getUserName();
-		passWord=user.getPassWord();
-		System.out.println(user.getUserName());
-		System.out.println(user.getPassWord());
-
+		this.userName=user.getUserName();
+		this.passWord=user.getPassWord();
+		System.out.println(userName);
+		System.out.println(passWord);
+		
 		if(user.getUserMessageType().equals("USER_REGISTER")){
-			boolean seeKUserResult=yychatDbUtil.seeKUser(userName);
+			boolean seekUserResult=yychatDbUtil.seekUser(userName);
 			mess=new Message();
-			mess.setSender("Seerver");
+			mess.setSender("Server");
 			mess.setReceiver(userName);
-			if(seeKUserResult){
-				//返回客户端注册失败
+			if(seekUserResult){
 				mess.setMessageType(Message.message_RegisterFailure);
-			}else{
-				//将新用户名插入user表，返回客户端注册成功
+				//System.out.println("注册失败 ");
+			}else {
 				yychatDbUtil.addUser(userName,passWord);
 				mess.setMessageType(Message.message_RegisterSuccess);
+				//System.out.println("注册成功 ");
 			}
-			sendMessage(s, mess);
+			sendMessage(s,mess);
 			s.close();
 		}
 		
-		if(user.getUserMessageType().equals("USER_LOGIN")){
-			boolean loginSuccess=yychatDbUtil.loginValidate(userName, passWord);
-			mess=new Message();
-			mess.setSender("Seerver");
-			mess.setReceiver(userName);
-			
-			
-			if(loginSuccess){
-				//告诉客户端密码验证通过,可以创建Message类
-				
-			mess.setMessageType("Message.message_LoginSuccess");//1为验证通过
-			
-
-			String friendString=yychatDbUtil.getFriendString(userName);
-			mess.setContent(friendString);
-			
-			}else{	
-				
-				mess.setMessageType("Message.message_LoginFailure");//0为验证不通过
-				
-			}
-			sendMessage(s,mess);
-			if(loginSuccess){
-				//     第一步 
-				 mess.setMessageType(Message.message_NewOnlineFriend);
-				 mess.setSender("Server");
-				 mess.setContent(userName);
-				 
-				 
-				 Set onlineFriendSet=hmSocket.keySet();
-				 Iterator it=onlineFriendSet.iterator();
-				 String friendName;
-				 while(it.hasNext()){
-					 friendName=(String)it.next();
-					 mess.setReceiver(friendName);
-					 
-					 Socket s1=(Socket)hmSocket.get(friendName);
-					 sendMessage(s1,mess);
-				 }
-				 
-				
-				
-				hmSocket.put(userName,s);
-				new ServerReceiverThread(s).start();
-				
-				}
 		
-				}
+		if(user.getUserMessageType().equals("USER_LOGIN")){
+		
+		boolean loginSuccess=yychatDbUtil.loginValidate(userName, passWord);
+		//
+		mess=new Message();
+		mess.setSender("Server");
+		mess.setReceiver(user.getUserName());
+		//if(user.getPassWord().equals("123456")){
+			//
+		if(loginSuccess){
+			mess.setMessageType(Message.message_LoginSuccess);//
+			String friendString=yychatDbUtil.getFriendString(userName);
+			//
+			mess.setContent(friendString);
+			System.out.println(userName+"的relation数据表中好友："+friendString);
+		
+		}else{
+			mess.setMessageType(Message.message_LoginFailure);//
+			
+		}
+		sendMessage(s,mess);
+		
+		//
+		if(loginSuccess){
+			//2.1
+			mess.setMessageType(Message.message_NewOnlineFriend);
+			mess.setSender("Server");
+			mess.setContent(userName);
+			//拿到已经在线用户的全部名字
+			Set onlineFriendSet =hmSocket.keySet();
+			Iterator it=onlineFriendSet.iterator();
+			String friendName;
+			while(it.hasNext()){
+				friendName=(String)it.next();
+				mess.setReceiver(friendName);
+				//向friendName
+				Socket s1=(Socket)hmSocket.get(friendName);
+				sendMessage(s1,mess);
+			}
+			
+			
+			
+			hmSocket.put(userName, s);
+			new ServerReceiverThread(s).start();
+			
+		
+			}
 		}
 
-		
-		//密码验证功能
-//		mess=new Message();
-//		mess.setSender("Seerver");
-//		mess.setReceiver(userName);
-//		
-//		boolean loginSuccess=ZzchatDbUtil.loginValidate(userName, passWord);
-//		if(loginSuccess){
-//			//告诉客户端密码验证通过,可以创建Message类
-//			
-//		mess.setMessageType("Message.message_LoginSuccess");//1为验证通过
-//		
-//
-//		String friendString=ZzchatDbUtil.getFriendString(userName);
-//		mess.setContent(friendString);
-//		
-//		}else{	
-//			
-//			mess.setMessageType("Message.message_LoginFailure");//0为验证不通过
-//			
-//		}
-//		sendMessage(s,mess);
-//		if(loginSuccess){
-//			//     第一步 
-//			 mess.setMessageType(Message.message_NewOnlineFriend);
-//			 mess.setSender("Server");
-//			 mess.setContent(userName);
-//			 
-//			 
-//			 Set onlineFriendSet=hmSocket.keySet();
-//			 Iterator it=onlineFriendSet.iterator();
-//			 String friendName;
-//			 while(it.hasNext()){
-//				 friendName=(String)it.next();
-//				 mess.setReceiver(friendName);
-//				 
-//				 Socket s1=(Socket)hmSocket.get(friendName);
-//				 sendMessage(s1,mess);
-//			 }
-//			 
-//			
-//			
-//			hmSocket.put(userName,s);
-//			new ServerReceiverThread(s).start();
-//			
-//			}
-//	
-//			}
-		
+	}
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
-		}
+		} 
 	}
-
-	private void sendMessage(Socket s,Message mess) throws IOException {
-		ObjectOutputStream oos=new ObjectOutputStream(s.getOutputStream());
+	
+	public void sendMessage(Socket s,Message mess) throws IOException {
+		ObjectOutputStream oos =new ObjectOutputStream(s.getOutputStream());
 		oos.writeObject(mess);
 	}
 
@@ -173,5 +127,3 @@ public class StartServer {
 	}
 
 }
-
-

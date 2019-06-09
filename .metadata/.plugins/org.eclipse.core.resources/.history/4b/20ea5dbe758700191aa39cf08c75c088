@@ -1,0 +1,97 @@
+package yychatserver;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.Iterator;
+import java.util.Set;
+
+import com.yychat.model.Message;
+
+public class ServerReceiverThread extends Thread{
+	Socket s;
+	String sender;
+	public ServerReceiverThread(Socket s) {//
+	this.s=s;
+	}	
+	ObjectInputStream ois;
+	ObjectOutputStream oos;
+	Message mess;
+	Socket s1;
+	public void run(){
+	
+		while(true){
+		
+		try{
+			
+		ois=new ObjectInputStream(s.getInputStream());
+		mess=(Message)ois.readObject();//接收聊天信息
+		sender=mess.getSender();
+		System.out.println(mess.getSender()+"对"+mess.getReceiver()+"说:"+mess.getContent());
+	
+		if(mess.getMessageType().equals(Message.message_AddFriend)){
+		String addFriendName=mess.getContent();
+		if(!yychatDbUtil.seeKUser(addFriendName)){
+			mess.setMessageType(Message.message_AddFriendFailure_NoUser);
+		}else
+				
+			{
+			if(yychatDbUtil.seekFriend(sender,addFriendName)){
+				
+				
+			
+				mess.setMessageType(Message.message_AddFriendFailure_AlreadyFriend);
+			}else{
+				
+				}
+			}
+		}
+		
+		if(mess.getMessageType().equals(Message.message_Common)){
+		s1=(Socket)StartServer.hmSocket.get(mess.getReceiver());
+		
+			senderMessage(mess, s1);
+		
+		}
+		
+	
+		
+		if(mess.getMessageType().equals(Message.message_RequestOnLineFriend)){
+			//拿到全部在线好友的名字
+			Set friendSet=StartServer.hmSocket.keySet();//键值对，在线好友集合
+			Iterator it=friendSet.iterator();//迭代器对象
+			String friendName;
+			String friendString=" ";
+		while(it.hasNext()){//判断还有没有下一个元素
+			friendName=(String)it.next();//取出下一个元素
+			if(!friendName.equals(mess.getSender()))
+				friendString=friendName+" "+friendString;//为什么用空格？
+				}
+			
+		//发送好友名字到客户端
+			mess.setContent(friendString);
+			mess.setMessageType(Message.message_OnlineFriend);
+			mess.setSender("Server");
+			mess.setReceiver(sender);
+			senderMessage(mess, s);
+			
+			}
+		}
+		
+		
+		
+		catch(IOException | ClassNotFoundException e){
+		e.printStackTrace();
+	}
+	
+	}
+	}
+
+	public void senderMessage(Message mess, Socket s) throws IOException {
+		oos=new ObjectOutputStream(s.getOutputStream());
+		oos.writeObject(mess);//转发聊天信息
+	}
+}
+		
+	

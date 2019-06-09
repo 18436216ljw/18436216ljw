@@ -45,12 +45,7 @@ public class ChatServer  extends JFrame implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==jb1){
 		new StartServer();
-		
 		}
-		if(e.getSource()==jb2){
-		this.dispose();	
-		}
-			
 		
 	}
 

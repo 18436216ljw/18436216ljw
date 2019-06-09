@@ -154,16 +154,18 @@ public void actionPerformed(ActionEvent e) {
 			
 			//boolean loginSuccess=new ClientConnect().loginValidate(user);
 			Message mess=new ClientConnet().loginValidateFromDB(user);
-			if(mess.getMessageType().equals("Message.message_LoginSuccess")){
+			//System.out.println(mess.getMessageType());
+			if(mess.getMessageType().equals(Message.message_LoginSuccess)){
 			String friendString=mess.getContent();
 			System.out.println("全部好友"+friendString);
 			
 			FriendList friendList =new FriendList(userName,friendString);
-			hmFriendList.put(userName,friendString );
+			hmFriendList.put(userName,friendList );
 			//第一步
 			Message mess1=new Message();
 			mess1.setSender(userName);
 			mess1.setReceiver("Server");
+			//System.out.println(ClientConnet.hmSocket.get(userName));
 			mess1.setMessageType(Message.message_RequestOnLineFriend);
 			Socket s=(Socket)ClientConnet.hmSocket.get(userName);
 			ObjectOutputStream oos;
@@ -177,7 +179,6 @@ public void actionPerformed(ActionEvent e) {
 			this.dispose();
 			}else{
 			JOptionPane.showMessageDialog(this,"密码错误");
-			
 					}
 		      }
 		}
