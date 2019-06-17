@@ -1,4 +1,5 @@
 package com.chatclient.view;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 
@@ -15,6 +16,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.PasswordAuthentication;
 import java.net.Socket;
 import java.util.HashMap;
 
@@ -28,23 +30,23 @@ public class ClientLogin extends JFrame implements ActionListener{
 
 
 
-
+JButton setuser;
 
 			
 
-
+CardLayout cardLayout;
 	
 	JLabel jlbl1;
 		
-	
+	JPanel jp9;
 	JTabbedPane jtp1;
 	JPanel jp2,jp3,jp4;
 	JLabel jlbl2,jlbl3,jlbl4,jlbl5,jlbl20,jlbl30,jlbl40,jlbl50,jlbl21,jlbl31,jlbl41,jlbl51;
-	JTextField jtf1,jtf10,jtf11;
+	JTextField jtf1,jtf10,jtf11,jtf99,jtf98,jtf97;
 	JPasswordField jpf1,jpf10,jpf11;
 	JButton jb4,jb40,jb41;
 	JCheckBox jcb1,jcb2,jcb10,jcb20,jcb11,jcb21;
-	
+	JLabel jlbl99,jlbl98,jlbl97;
 	JButton jb1,jb2,jb3;
 	JPanel jp1;
 	
@@ -61,6 +63,7 @@ public class ClientLogin extends JFrame implements ActionListener{
 		jlbl4.setForeground(Color.blue);
 		jlbl5=new JLabel("申请密码保护",JLabel.CENTER);
 		jtf1=new JTextField();
+	
 		jpf1=new JPasswordField();
 		jb4=new JButton(new ImageIcon("images/clear.gif"));
 		jcb1=new JCheckBox("隐身登录");jcb2=new JCheckBox("记住密码");
@@ -108,13 +111,14 @@ public class ClientLogin extends JFrame implements ActionListener{
 		jb2.addActionListener(this);
 		
 		jb3=new JButton(new ImageIcon("images/quxiao.gif"));
+		jb3.addActionListener(this);
 		jp1=new JPanel();
 		jp1.add(jb1);jp1.add(jb2);jp1.add(jb3);
 		this.add(jp1,"South" );
 		////////////////////////////////////////////////////////////////////////////////////////////////
 		getRootPane().setDefaultButton(jb1);
 		////////////////////////////////////////////////////////////////////////////////////////////////
-		jb1.addActionListener(this);
+		//jb1.addActionListener(this);
 		this.setSize(350,240);
 		this.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
@@ -127,7 +131,22 @@ public class ClientLogin extends JFrame implements ActionListener{
 @Override
 
 public void actionPerformed(ActionEvent e) {
-		if(e.getSource()==jb2){
+		
+	
+	if(e.getSource()==jb2){
+		password password=new password();
+		
+		
+	}
+	
+		/*jp9=new JPanel(new GridLayout(2,3));
+		jlbl99=new JLabel("账号",JLabel.CENTER);jlbl98=new JLabel("密码",JLabel.CENTER);
+		jlbl97=new JLabel("确认密码",JLabel.CENTER);
+	}*/
+	
+	
+	
+	/*if(e.getSource()==jb2){
 			String userName= jtf1.getText();
 			String password=new String(jpf1.getPassword());
 			//创建User对象 
@@ -141,9 +160,14 @@ public void actionPerformed(ActionEvent e) {
 			}else {
 					JOptionPane.showMessageDialog(this,"可能存在同名用户，注册失败！");
 				}
-		}
-		
+		}*/
+	if(e.getSource()==jb3)
+	{
+		this.dispose();
+
+	}
 		if(e.getSource()==jb1){
+			System.out.println("1");
 			String userName= jtf1.getText();
 			String password=new String(jpf1.getPassword());
 			//创建User对象 
@@ -151,7 +175,6 @@ public void actionPerformed(ActionEvent e) {
 			user.setUserName(userName);
 			user.setPassWord(password);
 			user.setUserMessageType("USER_LOGIN");
-			
 			//boolean loginSuccess=new ClientConnect().loginValidate(user);
 			Message mess=new ClientConnet().loginValidateFromDB(user);
 			//System.out.println(mess.getMessageType());
@@ -168,6 +191,7 @@ public void actionPerformed(ActionEvent e) {
 			//System.out.println(ClientConnet.hmSocket.get(userName));
 			mess1.setMessageType(Message.message_RequestOnLineFriend);
 			Socket s=(Socket)ClientConnet.hmSocket.get(userName);
+			System.out.println(s);
 			ObjectOutputStream oos;
 			try{
 				oos=new ObjectOutputStream(s.getOutputStream());

@@ -34,6 +34,36 @@ public class yychatDbUtil {
 	}
 	return conn;
 }
+	
+	
+	public static void addMessage(String sender,String receiver,String content){
+	
+		Connection conn =getConnection();
+		String message_Add_Sql="insert into message (sender,receiver,content,timestamp) values(?,?,?,?)";
+		PreparedStatement ptmt=null;
+		
+		try {
+			ptmt=conn.prepareStatement(message_Add_Sql);	
+			ptmt.setString(1,sender);
+			ptmt.setString(2,receiver);
+			ptmt.setString(3,content);
+			
+			Date date=new Date();
+			java.sql.Timestamp timestamp=new java.sql.Timestamp(date.getTime());
+			ptmt.setTimestamp(4, timestamp);
+			//java.util.Date date=new java.util.Date();
+			//4、执行查询，返回结果集
+			 int count=ptmt.executeUpdate();//插入记录的条数
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally{
+			closeDB(conn,ptmt);
+		
+		}
+	}
+	
+	
 	public static int addRelation(String majorUser,String slaveUser,String relationType){
 		int count =0;
 		Connection conn =getConnection();
@@ -45,6 +75,8 @@ public class yychatDbUtil {
 			ptmt.setString(1,majorUser);
 			ptmt.setString(2,slaveUser);
 			ptmt.setString(3,relationType);
+			
+			
 			//java.util.Date date=new java.util.Date();
 			//4、执行查询，返回结果集
 			count=ptmt.executeUpdate();//插入记录的条数

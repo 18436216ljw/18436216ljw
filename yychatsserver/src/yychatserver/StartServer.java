@@ -19,11 +19,13 @@ import com.yychat.model.User;
 
 public class StartServer  {
 	public static HashMap hmSocket=new HashMap<String,Socket>();
-	Socket s;
+	
 	ServerSocket ss;
 	String userName;
 	String passWord;
+	String userMessageType;
 	Message mess;
+	ObjectOutputStream oos;
 	public StartServer() {
 		
 		
@@ -33,41 +35,26 @@ public class StartServer  {
 		
 		while(true){
 
-			s=ss.accept();//
+			Socket s=ss.accept();//
 			System.out.println("连接成功:"+s);
 		//
 		ObjectInputStream ois=new ObjectInputStream(s.getInputStream());
 		User user=(User)ois.readObject();
-		this.userName=user.getUserName();
-		this.passWord=user.getPassWord();
+		userName=user.getUserName();
+		passWord=user.getPassWord();
+		userMessageType=user.getUserMessageType();
 		System.out.println(userName);
 		System.out.println(passWord);
 		
-		if(user.getUserMessageType().equals("USER_REGISTER")){
-			boolean seekUserResult=yychatDbUtil.seekUser(userName);
-			mess=new Message();
-			mess.setSender("Server");
-			mess.setReceiver(userName);
-			if(seekUserResult){
-				mess.setMessageType(Message.message_RegisterFailure);
-				//System.out.println("注册失败 ");
-			}else {
-				yychatDbUtil.addUser(userName,passWord);
-				mess.setMessageType(Message.message_RegisterSuccess);
-				//System.out.println("注册成功 ");
-			}
-			sendMessage(s,mess);
-			s.close();
-		}
-		
+		mess=new Message();
+		mess.setSender("Server");
+		mess.setReceiver(userName);
 		
 		if(user.getUserMessageType().equals("USER_LOGIN")){
 		
 		boolean loginSuccess=yychatDbUtil.loginValidate(userName, passWord);
 		//
-		mess=new Message();
-		mess.setSender("Server");
-		mess.setReceiver(user.getUserName());
+		
 		//if(user.getPassWord().equals("123456")){
 			//
 		if(loginSuccess){
@@ -78,10 +65,12 @@ public class StartServer  {
 			System.out.println(userName+"的relation数据表中好友："+friendString);
 		
 		}else{
-			mess.setMessageType(Message.message_LoginFailure);//
+			mess.setMessageType(Message.message_LoginFailure);
 			
 		}
 		sendMessage(s,mess);
+		
+		
 		
 		//
 		if(loginSuccess){
@@ -97,8 +86,8 @@ public class StartServer  {
 				friendName=(String)it.next();
 				mess.setReceiver(friendName);
 				//向friendName
-				Socket s1=(Socket)hmSocket.get(friendName);
-				sendMessage(s1,mess);
+				//Socket s1=(Socket)hmSocket.get(friendName);
+				sendMessage(s,mess);
 			}
 			
 			
@@ -109,6 +98,22 @@ public class StartServer  {
 		
 			}
 		}
+		if(user.getUserMessageType().equals("USER_REGISTER")){
+			boolean seekUserResult=yychatDbUtil.seekUser(userName);
+			if(seekUserResult){
+				mess.setMessageType(Message.message_RegisterFailure);
+				//System.out.println("注册失败 ");
+			}else {
+				yychatDbUtil.addUser(userName,passWord);
+				mess.setMessageType(Message.message_RegisterSuccess);
+				//System.out.println("注册成功 ");
+			}
+			sendMessage(s,mess);
+			s.close();
+		}
+		
+		
+		
 
 	}
 		} catch (IOException | ClassNotFoundException e) {
